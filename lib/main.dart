@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -58,38 +59,40 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundColor: _shadeColor,
-                  radius: 32.0,
-                  child: Text("text",
-                      style:
-                          TextStyle(color: _textShadeColor, shadows: <Shadow>[
-                        Shadow(
-                          offset: Offset(0.3, 0.3),
-                          blurRadius: 3.0,
-                          color: _textShadeColor,
-                        ),
-                      ])),
-                ),
-                const SizedBox(width: 16.0),
-                OutlinedButton(
-                  onPressed: _openColorPicker,
-                  child: const Text('choose color',
-                      style: TextStyle(color: Colors.black)),
-                ),
-              ],
-            ),
-            getForm(),
-          ],
-        ),
-      ), // auto-formatting nicer for build methods.
+      body: ListView(children: <Widget>[
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: _shadeColor,
+                    radius: 32.0,
+                    child: Text("text",
+                        style:
+                            TextStyle(color: _textShadeColor, shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(0.3, 0.3),
+                            blurRadius: 3.0,
+                            color: _textShadeColor,
+                          ),
+                        ])),
+                  ),
+                  const SizedBox(width: 16.0),
+                  OutlinedButton(
+                    onPressed: _openColorPicker,
+                    child: const Text('choose color',
+                        style: TextStyle(color: Colors.black)),
+                  ),
+                ],
+              ),
+              getForm(),
+            ],
+          ),
+        )
+      ]), // auto-formatting nicer for build methods.
     );
   }
 
@@ -160,10 +163,92 @@ class _MyHomePageState extends State<MyHomePage> {
                 return null;
               },
             ),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                primary: Colors.black,
+              ),
+              onPressed: () {
+                setState(() {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text('image is being generated, please wait.')));
+                    // generateImage()
+                  }
+                });
+              },
+              child: const Text('generate image'),
+            ),
+            new LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              return getImage(constraints.maxWidth);
+            }),
           ],
         ),
       ),
     );
+  }
+
+  Widget getImage(double maxWidth) {
+    return new Container(
+        color: _shadeColor,
+        height: maxWidth,
+        child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Flexible(
+                    child: Text(quote,
+                        style: GoogleFonts.cormorantGaramond(
+                            color: _textShadeColor,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(0.3, 0.3),
+                                blurRadius: 3.0,
+                                color: _textShadeColor,
+                              )
+                            ]))),
+                translation.isEmpty
+                    ? Container()
+                    : Row(
+                        children: <Widget>[
+                          const SizedBox(height: 12.0),
+                          Flexible(
+                              child: Text(translation,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.cormorantGaramond(
+                                      color: _textShadeColor,
+                                      shadows: <Shadow>[
+                                        Shadow(
+                                          offset: Offset(0.3, 0.3),
+                                          blurRadius: 3.0,
+                                          color: _textShadeColor,
+                                        )
+                                      ]))),
+                        ],
+                      ),
+                author.isEmpty
+                    ? Container()
+                    : Row(
+                        children: <Widget>[
+                          const SizedBox(height: 12.0),
+                          Flexible(
+                              child: Text(author,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.cormorantGaramond(
+                                      color: _textShadeColor,
+                                      shadows: <Shadow>[
+                                        Shadow(
+                                          offset: Offset(0.3, 0.3),
+                                          blurRadius: 3.0,
+                                          color: _textShadeColor,
+                                        )
+                                      ]))),
+                        ],
+                      )
+              ],
+            )));
   }
 
   void _openDialog(String title, Widget content) {
@@ -187,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _shadeColor = _tempShadeColor;
                   _textShadeColor = _shadeColor!.computeLuminance() > 0.5
                       ? Colors.black26.withOpacity(0.5)
-                      : Colors.white24.withOpacity(0.7);
+                      : Colors.white24.withOpacity(0.8);
                 });
               },
             ),
