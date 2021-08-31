@@ -12,25 +12,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Colors.white,
-          accentColor: Colors.white,
-          scaffoldBackgroundColor: Colors.white,
-          toggleableActiveColor: Colors.black,
-          inputDecorationTheme: InputDecorationTheme(
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.1)),
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-            ),
-            labelStyle: const TextStyle(
-              color: Colors.black,
-            ),
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+        accentColor: Colors.black,
+        scaffoldBackgroundColor: Colors.white,
+        toggleableActiveColor: Colors.black,
+        inputDecorationTheme: InputDecorationTheme(
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black.withOpacity(0.1)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+          ),
+          labelStyle: const TextStyle(
+            color: Colors.black,
+          ),
+        ),
       ),
       home: MyHomePage(title: 'QuoteImager'),
     );
@@ -52,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Color? _shadeColor = Colors.blue[800];
   Color _textShadeColor = Colors.black26;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,24 +67,102 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 CircleAvatar(
                   backgroundColor: _shadeColor,
-                  radius: 35.0,
-                  child: Text("shade", style: TextStyle(color: _textShadeColor, shadows: <Shadow>[
-                  Shadow(
-                  offset: Offset(0.3, 0.3),
-                    blurRadius: 3.0,
-                    color: _textShadeColor,
-                  ),])),
+                  radius: 32.0,
+                  child: Text("text",
+                      style:
+                          TextStyle(color: _textShadeColor, shadows: <Shadow>[
+                        Shadow(
+                          offset: Offset(0.3, 0.3),
+                          blurRadius: 3.0,
+                          color: _textShadeColor,
+                        ),
+                      ])),
+                ),
+                const SizedBox(width: 16.0),
+                OutlinedButton(
+                  onPressed: _openColorPicker,
+                  child: const Text('choose color',
+                      style: TextStyle(color: Colors.black)),
                 ),
               ],
             ),
-            const SizedBox(height: 32.0),
-            OutlinedButton(
-              onPressed: _openColorPicker,
-              child: const Text('choose background color'),
+            getForm(),
+          ],
+        ),
+      ), // auto-formatting nicer for build methods.
+    );
+  }
+
+  String quote = "";
+  String translation = "";
+  String author = "";
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Widget getForm() {
+    final node = FocusScope.of(context);
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(25),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 12.0),
+            TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              textInputAction: TextInputAction.newline,
+              onEditingComplete: () => node.nextFocus(),
+              decoration: const InputDecoration(
+                labelText: 'quote',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'quote is required!';
+                }
+                quote = value;
+                return null;
+              },
+            ),
+            const SizedBox(height: 12.0),
+            TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              textInputAction: TextInputAction.newline,
+              onEditingComplete: () => node.nextFocus(),
+              decoration: const InputDecoration(
+                labelText: '(translation)',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  translation = "";
+                } else {
+                  translation = value;
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 12.0),
+            TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              textInputAction: TextInputAction.done,
+              onEditingComplete: () => node.nextFocus(),
+              decoration: const InputDecoration(
+                labelText: '(author)',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  author = "";
+                } else {
+                  author = value;
+                }
+                return null;
+              },
             ),
           ],
         ),
-      ),// auto-formatting nicer for build methods.
+      ),
     );
   }
 
@@ -99,17 +176,19 @@ class _MyHomePageState extends State<MyHomePage> {
           content: content,
           actions: [
             TextButton(
-              child: Text('cancel'),
+              child: Text('cancel', style: TextStyle(color: Colors.black)),
               onPressed: Navigator.of(context).pop,
             ),
             TextButton(
-              child: Text('submit'),
+              child: Text('submit', style: TextStyle(color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
-                setState(()  {
+                setState(() {
                   _shadeColor = _tempShadeColor;
-                  _textShadeColor = _shadeColor!.computeLuminance() > 0.5 ? Colors.black26.withOpacity(0.5) : Colors.white24.withOpacity(0.7);
-                } );
+                  _textShadeColor = _shadeColor!.computeLuminance() > 0.5
+                      ? Colors.black26.withOpacity(0.5)
+                      : Colors.white24.withOpacity(0.7);
+                });
               },
             ),
           ],
