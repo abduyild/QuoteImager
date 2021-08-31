@@ -2,6 +2,7 @@
     package="tr.abduyild.quote_imager">
    <application
         android:label="quote_imager"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
