@@ -66,13 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final GlobalKey genKey = GlobalKey();
 
-
   @override
   void initState() {
     super.initState();
 
     _requestPermission();
-
   }
 
   void _incrementCounter() {
@@ -214,8 +212,8 @@ class _MyHomePageState extends State<MyHomePage> {
             controller: screenshotController,
             child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return getImage(constraints.maxWidth);
-                }),
+              return getImage(constraints.maxWidth);
+            }),
           ),
           const SizedBox(height: 12.0),
           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
@@ -229,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
-                        Text('image is being generated, please wait.')));
+                            Text('image is being generated, please wait.')));
                   }
                 });
               },
@@ -245,15 +243,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
-                        Text('image is being downloaded, please wait.')));
+                            Text('image is being downloaded, please wait.')));
+                    screenshotController
+                        .capture(
+                            delay: Duration(milliseconds: 10), pixelRatio: 6.0)
+                        .then((capturedImage) async {
+                      ImageGallerySaver.saveImage(capturedImage!, quality: 100);
+                    }).catchError((onError) {
+                      print(onError);
+                    });
                   }
-                  screenshotController
-                      .capture(delay: Duration(milliseconds: 10), pixelRatio: 6.0)
-                      .then((capturedImage) async {
-                    ImageGallerySaver.saveImage(capturedImage!, quality: 100);
-                  }).catchError((onError) {
-                    print(onError);
-                  });
                 });
               },
               child: const Text('download image'),
@@ -289,43 +288,43 @@ class _MyHomePageState extends State<MyHomePage> {
                 translation.isEmpty
                     ? Container()
                     : Container(
-                    child: Flexible(
-                        child: Text(translation,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.cormorantGaramond(
-                                color: _textShadeColor,
-                                shadows: <Shadow>[
-                                  Shadow(
-                                    offset: Offset(0.3, 0.3),
-                                    blurRadius: 3.0,
+                        child: Flexible(
+                            child: Text(translation,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.cormorantGaramond(
                                     color: _textShadeColor,
-                                  )
-                                ])))),
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.3, 0.3),
+                                        blurRadius: 3.0,
+                                        color: _textShadeColor,
+                                      )
+                                    ])))),
                 const SizedBox(height: 24.0),
                 author.isEmpty
                     ? Container()
                     : Container(
-                    child: Flexible(
-                        child: Text(author,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.cormorantGaramond(
-                                color: _textShadeColor,
-                                shadows: <Shadow>[
-                                  Shadow(
-                                    offset: Offset(0.3, 0.3),
-                                    blurRadius: 3.0,
+                        child: Flexible(
+                            child: Text(author,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.cormorantGaramond(
                                     color: _textShadeColor,
-                                  )
-                                ])))),
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.3, 0.3),
+                                        blurRadius: 3.0,
+                                        color: _textShadeColor,
+                                      )
+                                    ])))),
               ],
             )));
   }
+
   _requestPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
     ].request();
   }
-
 
   void _openDialog(String title, Widget content) {
     showDialog(
@@ -338,9 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: [
             TextButton(
               child: Text('cancel', style: TextStyle(color: Colors.black)),
-              onPressed: Navigator
-                  .of(context)
-                  .pop,
+              onPressed: Navigator.of(context).pop,
             ),
             TextButton(
               child: Text('submit', style: TextStyle(color: Colors.black)),
@@ -370,5 +367,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 }
