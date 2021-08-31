@@ -78,35 +78,39 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(children: <Widget>[
         Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: _shadeColor,
-                    radius: 32.0,
-                    child: Text("text",
-                        style:
-                            TextStyle(color: _textShadeColor, shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(0.3, 0.3),
-                            blurRadius: 3.0,
-                            color: _textShadeColor,
-                          ),
-                        ])),
-                  ),
-                  const SizedBox(width: 16.0),
-                  OutlinedButton(
-                    onPressed: _openColorPicker,
-                    child: const Text('choose color',
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                ],
-              ),
-              getForm(),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: _shadeColor,
+                      radius: 32.0,
+                      child: Text("text",
+                          style: TextStyle(
+                              color: _textShadeColor,
+                              shadows: <Shadow>[
+                                Shadow(
+                                  offset: Offset(0.3, 0.3),
+                                  blurRadius: 3.0,
+                                  color: _textShadeColor,
+                                ),
+                              ])),
+                    ),
+                    const SizedBox(width: 16.0),
+                    OutlinedButton(
+                      onPressed: _openColorPicker,
+                      child: const Text('choose color',
+                          style: TextStyle(color: Colors.black)),
+                    ),
+                  ],
+                ),
+                getForm(),
+              ],
+            ),
           ),
         )
       ]), // auto-formatting nicer for build methods.
@@ -122,70 +126,70 @@ class _MyHomePageState extends State<MyHomePage> {
     final node = FocusScope.of(context);
     return Form(
       key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 12.0),
-            TextFormField(
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              textInputAction: TextInputAction.newline,
-              onEditingComplete: () => node.nextFocus(),
-              decoration: const InputDecoration(
-                labelText: 'quote',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'quote is required!';
-                }
-                quote = value;
-                return null;
-              },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(height: 12.0),
+          TextFormField(
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            textInputAction: TextInputAction.newline,
+            onEditingComplete: () => node.nextFocus(),
+            decoration: const InputDecoration(
+              labelText: 'quote',
             ),
-            const SizedBox(height: 12.0),
-            TextFormField(
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              textInputAction: TextInputAction.newline,
-              onEditingComplete: () => node.nextFocus(),
-              decoration: const InputDecoration(
-                labelText: '(translation)',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  translation = "";
-                } else {
-                  translation = value;
-                }
-                return null;
-              },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'quote is required!';
+              }
+              quote = value;
+              return null;
+            },
+          ),
+          const SizedBox(height: 12.0),
+          TextFormField(
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            textInputAction: TextInputAction.newline,
+            onEditingComplete: () => node.nextFocus(),
+            decoration: const InputDecoration(
+              labelText: '(translation)',
             ),
-            const SizedBox(height: 12.0),
-            TextFormField(
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              textInputAction: TextInputAction.done,
-              onEditingComplete: () => node.nextFocus(),
-              decoration: const InputDecoration(
-                labelText: '(author)',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  author = "";
-                } else {
-                  author = value;
-                }
-                return null;
-              },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                translation = "";
+              } else {
+                translation = value;
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 12.0),
+          TextFormField(
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            textInputAction: TextInputAction.done,
+            onEditingComplete: () => node.nextFocus(),
+            decoration: const InputDecoration(
+              labelText: '(author)',
             ),
-            const SizedBox(height: 12.0),
-            LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-              return getImage(constraints.maxWidth);
-            }),
-            const SizedBox(height: 12.0),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                author = "";
+              } else {
+                author = value;
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 12.0),
+          LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return getImage(constraints.maxWidth);
+          }),
+          const SizedBox(height: 12.0),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
+              Widget>[
             OutlinedButton(
               style: OutlinedButton.styleFrom(
                 primary: Colors.black,
@@ -196,14 +200,30 @@ class _MyHomePageState extends State<MyHomePage> {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
                             Text('image is being generated, please wait.')));
-                    // downloadImage()
                   }
                 });
               },
-              child: const Text('generate image'),
+              child: const Text('generate preview'),
             ),
-          ],
-        ),
+            SizedBox(width: 12.0),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                primary: Colors.black,
+              ),
+              onPressed: () {
+                setState(() {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text('image is being downloaded, please wait.')));
+                    //downloadImage()
+                  }
+                });
+              },
+              child: const Text('download image'),
+            )
+          ]),
+        ],
       ),
     );
   }
@@ -212,13 +232,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
         color: _shadeColor,
         height: maxWidth,
+        width: maxWidth,
         child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Flexible(
-                    child: Text(quote + "\n",
+                    child: Text(quote,
                         style: GoogleFonts.cormorantGaramond(
                             color: _textShadeColor,
                             shadows: <Shadow>[
@@ -228,36 +249,38 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: _textShadeColor,
                               )
                             ]))),
-                SizedBox(height: 24.0),
+                const SizedBox(height: 24.0),
                 translation.isEmpty
                     ? Container()
-                    : Container(child: Flexible(
-                        child: Text(translation,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.cormorantGaramond(
-                                color: _textShadeColor,
-                                shadows: <Shadow>[
-                                  Shadow(
-                                    offset: Offset(0.3, 0.3),
-                                    blurRadius: 3.0,
+                    : Container(
+                        child: Flexible(
+                            child: Text(translation,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.cormorantGaramond(
                                     color: _textShadeColor,
-                                  )
-                                ])))),
-                SizedBox(height: 24.0),
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.3, 0.3),
+                                        blurRadius: 3.0,
+                                        color: _textShadeColor,
+                                      )
+                                    ])))),
+                const SizedBox(height: 24.0),
                 author.isEmpty
                     ? Container()
-                    : Container(child: Flexible(
-                        child: Text(author,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.cormorantGaramond(
-                                color: _textShadeColor,
-                                shadows: <Shadow>[
-                                  Shadow(
-                                    offset: Offset(0.3, 0.3),
-                                    blurRadius: 3.0,
+                    : Container(
+                        child: Flexible(
+                            child: Text(author,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.cormorantGaramond(
                                     color: _textShadeColor,
-                                  )
-                                ])))),
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.3, 0.3),
+                                        blurRadius: 3.0,
+                                        color: _textShadeColor,
+                                      )
+                                    ])))),
               ],
             )));
   }
