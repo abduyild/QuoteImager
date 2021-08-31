@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -53,8 +54,24 @@ class _MyHomePageState extends State<MyHomePage> {
   Color? _shadeColor = Colors.blue[800];
   Color _textShadeColor = Colors.black26;
 
+  _read() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString("color") ?? "";
+    if (value.isNotEmpty) {
+      setState(() {
+        _shadeColor = Color(int.parse(value));
+      });
+    }
+  }
+
+  _save(Color color) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("color", color.value.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
+    _read();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -163,6 +180,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 return null;
               },
             ),
+            const SizedBox(height: 12.0),
+            LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              return getImage(constraints.maxWidth);
+            }),
+            const SizedBox(height: 12.0),
             OutlinedButton(
               style: OutlinedButton.styleFrom(
                 primary: Colors.black,
@@ -173,16 +196,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
                             Text('image is being generated, please wait.')));
-                    // generateImage()
+                    // downloadImage()
                   }
                 });
               },
               child: const Text('generate image'),
             ),
-            new LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-              return getImage(constraints.maxWidth);
-            }),
           ],
         ),
       ),
@@ -190,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget getImage(double maxWidth) {
-    return new Container(
+    return Container(
         color: _shadeColor,
         height: maxWidth,
         child: Padding(
@@ -199,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Flexible(
-                    child: Text(quote,
+                    child: Text(quote + "\n",
                         style: GoogleFonts.cormorantGaramond(
                             color: _textShadeColor,
                             shadows: <Shadow>[
@@ -209,44 +228,36 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: _textShadeColor,
                               )
                             ]))),
+                SizedBox(height: 24.0),
                 translation.isEmpty
                     ? Container()
-                    : Row(
-                        children: <Widget>[
-                          const SizedBox(height: 12.0),
-                          Flexible(
-                              child: Text(translation,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.cormorantGaramond(
-                                      color: _textShadeColor,
-                                      shadows: <Shadow>[
-                                        Shadow(
-                                          offset: Offset(0.3, 0.3),
-                                          blurRadius: 3.0,
-                                          color: _textShadeColor,
-                                        )
-                                      ]))),
-                        ],
-                      ),
+                    : Container(child: Flexible(
+                        child: Text(translation,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.cormorantGaramond(
+                                color: _textShadeColor,
+                                shadows: <Shadow>[
+                                  Shadow(
+                                    offset: Offset(0.3, 0.3),
+                                    blurRadius: 3.0,
+                                    color: _textShadeColor,
+                                  )
+                                ])))),
+                SizedBox(height: 24.0),
                 author.isEmpty
                     ? Container()
-                    : Row(
-                        children: <Widget>[
-                          const SizedBox(height: 12.0),
-                          Flexible(
-                              child: Text(author,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.cormorantGaramond(
-                                      color: _textShadeColor,
-                                      shadows: <Shadow>[
-                                        Shadow(
-                                          offset: Offset(0.3, 0.3),
-                                          blurRadius: 3.0,
-                                          color: _textShadeColor,
-                                        )
-                                      ]))),
-                        ],
-                      )
+                    : Container(child: Flexible(
+                        child: Text(author,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.cormorantGaramond(
+                                color: _textShadeColor,
+                                shadows: <Shadow>[
+                                  Shadow(
+                                    offset: Offset(0.3, 0.3),
+                                    blurRadius: 3.0,
+                                    color: _textShadeColor,
+                                  )
+                                ])))),
               ],
             )));
   }
@@ -270,6 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.of(context).pop();
                 setState(() {
                   _shadeColor = _tempShadeColor;
+                  _save(_shadeColor!);
                   _textShadeColor = _shadeColor!.computeLuminance() > 0.5
                       ? Colors.black26.withOpacity(0.5)
                       : Colors.white24.withOpacity(0.8);
