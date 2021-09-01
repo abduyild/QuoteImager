@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -234,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Text('image is being downloaded, please wait.')));
                     screenshotController
                         .capture(
-                            delay: Duration(milliseconds: 10), pixelRatio: 6.0)
+                            delay: Duration(milliseconds: 10), pixelRatio: 4.0)
                         .then((capturedImage) async {
                       ImageGallerySaver.saveImage(capturedImage!, quality: 100);
                     }).catchError((onError) {
@@ -266,8 +265,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text(
                   quote,
                   softWrap: true,
-                  style: GoogleFonts.cormorantGaramond(
+                  style: GoogleFonts.markaziText(
                       color: _textShadeColor,
+                      fontWeight: FontWeight.bold,
                       shadows: <Shadow>[
                         Shadow(
                           offset: Offset(0.3, 0.3),
@@ -277,14 +277,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ]),
                   textAlign: TextAlign.center,
                 )),
-                SizedBox(height: 8.0),
+                SizedBox(height: 12.0),
                 translation.isEmpty
                     ? Container()
                     : Flexible(
                         child: Text(
                         translation,
                         softWrap: true,
-                        style: GoogleFonts.cormorantGaramond(
+                        style: GoogleFonts.markaziText(
                             color: _textShadeColor,
                             shadows: <Shadow>[
                               Shadow(
@@ -311,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text(
                           author,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.cormorantGaramond(
+                          style: GoogleFonts.markaziText(
                               color: _textShadeColor,
                               shadows: <Shadow>[
                                 Shadow(
