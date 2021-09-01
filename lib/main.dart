@@ -211,13 +211,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 primary: Colors.black,
               ),
               onPressed: () {
-                setState(() {
-                  if (_formKey.currentState!.validate()) {
+                if (_formKey.currentState!.validate()) {
+                  setState(() {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
                             Text('image is being generated, please wait.')));
-                  }
-                });
+                  });
+                }
               },
               child: const Text('generate preview'),
             ),
@@ -227,8 +227,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 primary: Colors.black,
               ),
               onPressed: () {
-                setState(() {
-                  if (_formKey.currentState!.validate()) {
+                if (_formKey.currentState!.validate()) {
+                  setState(() {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
                             Text('image is being downloaded, please wait.')));
@@ -240,8 +240,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     }).catchError((onError) {
                       print(onError);
                     });
-                  }
-                });
+                  });
+                }
               },
               child: const Text('download image'),
             )
@@ -299,21 +299,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 author.isEmpty
                     ? Container()
                     : Container(
-                        child: Flexible(
-                            child: Text(
-                        author,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.cormorantGaramond(
-                            color: _textShadeColor,
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: Offset(0.3, 0.3),
-                                blurRadius: 3.0,
-                                color: _textShadeColor,
-                              )
-                            ]),
-                        textAlign: TextAlign.center,
-                      ))),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              //                    <--- top side
+                              color: _textShadeColor,
+                              width: 0.4,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          author,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.cormorantGaramond(
+                              color: _textShadeColor,
+                              shadows: <Shadow>[
+                                Shadow(
+                                  offset: Offset(0.3, 0.3),
+                                  blurRadius: 3.0,
+                                  color: _textShadeColor,
+                                )
+                              ]),
+                          textAlign: TextAlign.center,
+                        )),
               ],
             )));
   }
