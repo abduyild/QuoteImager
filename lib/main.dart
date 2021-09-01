@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'QuoteImager',
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.white,
@@ -57,41 +56,31 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // Use temp variable to only update color when press dialog 'submit' button
   Color? _tempShadeColor;
-  Color? _shadeColor = Colors.blue[800];
+  Color? _backgroundColor = Colors.black26;
   Color _textShadeColor = Colors.black26;
 
   ScreenshotController screenshotController = ScreenshotController();
-
-  int _counter = 0;
-
   final GlobalKey genKey = GlobalKey();
 
   @override
   void initState() {
-    super.initState();
-
     _requestPermission();
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    super.initState();
   }
 
   _read() async {
     final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getString("color") ?? "";
-    if (value.isNotEmpty) {
+    final color = prefs.getString("color") ?? "";
+    if (color.isNotEmpty) {
       setState(() {
-        _shadeColor = Color(int.parse(value));
+        _backgroundColor = Color(int.parse(color));
       });
     }
   }
 
-  _save(Color color) async {
+  _save(String key, String value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString("color", color.value.toString());
+    prefs.setString(key, value);
   }
 
   @override
@@ -112,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      backgroundColor: _shadeColor,
+                      backgroundColor: _backgroundColor,
                       radius: 32.0,
                       child: Text("text",
                           style: TextStyle(
@@ -191,8 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           SizedBox(height: 12.0),
           TextFormField(
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
+            keyboardType: TextInputType.text,
             textInputAction: TextInputAction.done,
             onEditingComplete: () => node.nextFocus(),
             decoration: const InputDecoration(
@@ -265,16 +253,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getImage(double maxWidth) {
     return Container(
-        color: _shadeColor,
+        color: _backgroundColor,
         height: maxWidth,
         width: maxWidth,
         child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Flexible(
-                    child: Text(quote,
+                    child: Text(
+                  quote,
+                  softWrap: true,
+                  style: GoogleFonts.cormorantGaramond(
+                      color: _textShadeColor,
+                      shadows: <Shadow>[
+                        Shadow(
+                          offset: Offset(0.3, 0.3),
+                          blurRadius: 3.0,
+                          color: _textShadeColor,
+                        )
+                      ]),
+                  textAlign: TextAlign.center,
+                )),
+                SizedBox(height: 8.0),
+                translation.isEmpty
+                    ? Container()
+                    : Flexible(
+                        child: Text(
+                        translation,
+                        softWrap: true,
                         style: GoogleFonts.cormorantGaramond(
                             color: _textShadeColor,
                             shadows: <Shadow>[
@@ -283,39 +292,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                 blurRadius: 3.0,
                                 color: _textShadeColor,
                               )
-                            ]))),
-                const SizedBox(height: 24.0),
-                translation.isEmpty
-                    ? Container()
-                    : Container(
-                        child: Flexible(
-                            child: Text(translation,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.cormorantGaramond(
-                                    color: _textShadeColor,
-                                    shadows: <Shadow>[
-                                      Shadow(
-                                        offset: Offset(0.3, 0.3),
-                                        blurRadius: 3.0,
-                                        color: _textShadeColor,
-                                      )
-                                    ])))),
-                const SizedBox(height: 24.0),
+                            ]),
+                        textAlign: TextAlign.center,
+                      )),
+                const SizedBox(height: 8.0),
                 author.isEmpty
                     ? Container()
                     : Container(
                         child: Flexible(
-                            child: Text(author,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.cormorantGaramond(
-                                    color: _textShadeColor,
-                                    shadows: <Shadow>[
-                                      Shadow(
-                                        offset: Offset(0.3, 0.3),
-                                        blurRadius: 3.0,
-                                        color: _textShadeColor,
-                                      )
-                                    ])))),
+                            child: Text(
+                        author,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.cormorantGaramond(
+                            color: _textShadeColor,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(0.3, 0.3),
+                                blurRadius: 3.0,
+                                color: _textShadeColor,
+                              )
+                            ]),
+                        textAlign: TextAlign.center,
+                      ))),
               ],
             )));
   }
@@ -344,10 +342,10 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {
-                  _shadeColor = _tempShadeColor;
-                  _save(_shadeColor!);
-                  _textShadeColor = _shadeColor!.computeLuminance() > 0.5
-                      ? Colors.black26.withOpacity(0.5)
+                  _backgroundColor = _tempShadeColor;
+                  _save("color", _backgroundColor!.value.toString());
+                  _textShadeColor = _backgroundColor!.computeLuminance() > 0.5
+                      ? Colors.black26.withOpacity(0.6)
                       : Colors.white24.withOpacity(0.8);
                 });
               },
@@ -362,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _openDialog(
       "color menu",
       MaterialColorPicker(
-        selectedColor: _shadeColor,
+        selectedColor: _backgroundColor,
         onColorChange: (color) => setState(() => _tempShadeColor = color),
       ),
     );
